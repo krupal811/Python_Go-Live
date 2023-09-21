@@ -13,7 +13,8 @@ class Book(BaseModel):
     name: str
     genre: Literal["fiction", "non-fiction"]
     price: float
-    book_id: Optional[str] = uuid4().hex
+    book_id: Optional[str] = uuid4().hex,
+    img: str
 
 
 BOOKS_FILE = "books.json"
@@ -60,6 +61,38 @@ async def add_book(book: Book):
         json.dump(BOOKS, f)
 
     return {"book_id": book.book_id}
+
+
+@app.post("/add-bodok")
+async def add_book(book: Book):
+    book.book_id = uuid4().hex
+    json_book = jsonable_encoder(book)
+    print("json_book=====>", json_book)
+
+    # BOOKS.append(json_book)
+
+    # with open(BOOKS_FILE, "w") as f:
+    #     json.dump(BOOKS, f)
+
+    # return {"book_id": book.book_id}
+
+# @ns.route("/Filter/Bilateral")
+# class BilateralApi(Resource):  
+#     @ns.expect(image_edit_input_model)
+#     @ns.marshal_list_with(image_Edit_model)
+#     def post(self):
+#         img = readb64(ns.payload['img'])
+#         gray_image = color.rgb2gray(img)
+#         smoothed_image = denoise_bilateral(gray_image, sigma_color=0.05, sigma_spatial=15)
+#         num_bins = 8
+#         quantized_image = np.floor(smoothed_image * num_bins) / num_bins
+#         bilateral_img = np.stack([quantized_image] * 3, axis=-1)
+#         bilateral_img = img_as_ubyte(bilateral_img)
+#         write_img = write64(bilateral_img)
+#         response_img = {
+#             'img': write_img,
+#         }
+#         return response_img, 200
 
 
 @app.get("/get-book")
